@@ -1,4 +1,4 @@
-﻿namespace Parser.Algorithms;
+﻿namespace Parser.Interfaces;
 
 public interface IConstructReport
 {

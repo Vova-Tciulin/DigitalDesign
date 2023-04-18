@@ -1,4 +1,4 @@
-﻿namespace Parser;
+﻿namespace Parser.Interfaces;
 
 public interface ISaveText
 {

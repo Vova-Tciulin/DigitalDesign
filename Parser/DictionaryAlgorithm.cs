@@ -1,12 +1,18 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Parser.Interfaces;
 
-namespace Parser.Algorithms;
+namespace Parser;
 
 public class DictionaryAlgorithm:IConstructReport
 {
-    private Dictionary<string, int> _words = new Dictionary<string, int>();
+    private Dictionary<string, int> _words;
 
+    public DictionaryAlgorithm()
+    {
+        _words = new Dictionary<string, int>();
+    }
+    
     public string GetSortedReport(string text)
     {
         StringBuilder report = new StringBuilder();

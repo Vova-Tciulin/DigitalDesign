@@ -1,28 +1,37 @@
-﻿using Parser.Algorithms;
+﻿
+
+using Parser.Interfaces;
 
 namespace Parser;
 
 public class WordsReport
 {
-    public string Report { get; private set; }=String.Empty;
-    private readonly string _text;
-    private IGetText _getText;
+    public string Report { get; private set; }
+    public string Text { get; set; }
     
-    public WordsReport(IGetText getText)
+    private readonly IGetText _getText;
+    private readonly IConstructReport _alg;
+    private readonly ISaveText _saveText;
+    
+    public WordsReport(IGetText getText,IConstructReport alg,ISaveText saveText)
     {
         _getText = getText;
-        _text=_getText.GetText();
-    }
-    
-    
-    public void CreateSortedReport(IConstructReport constructor)
-    {
-        Report=constructor.GetSortedReport(_text);
+        _alg = alg;
+        _saveText = saveText;
     }
 
-    public void SaveSortedReport(ISaveText file)
+    public void ExtractText()
     {
-        file.SaveReport(Report);
+        Text = _getText.GetText();
+    }
+    public void CreateSortedReport()
+    {
+        Report=_alg.GetSortedReport(Text);
+    }
+
+    public void SaveSortedReport()
+    {
+        _saveText.SaveReport(Report);
     }
 
 }

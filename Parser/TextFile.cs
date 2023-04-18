@@ -1,4 +1,6 @@
-﻿namespace Parser;
+﻿using Parser.Interfaces;
+
+namespace Parser;
 
 public class TextFile:IGetText,ISaveText
 {

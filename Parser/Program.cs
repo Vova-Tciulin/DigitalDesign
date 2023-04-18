@@ -1,10 +1,11 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics;
 using Parser;
-using Parser.Algorithms;
+
 /*
- * класс TextFile в данном случае считывает текст и сохраняет отчет в .txt файл
+ * класс TextFile в данном случае считывает текст и сохраняет отчет в .txt файл(перезаписывает или создает новый файл)
  * класс DictionaryAlgorithm парсит текст на слова и сохраняет их в словарь, после чего генерирует отсортированный отчет
- * класс WordsReport реализует всю необходимую логику для генерации отчета 
+ * класс WordsReport реализует всю необходимую логику для для данной задачи
+ * одинаковые слова, но с разным регистром являются разными словами
  */
 
 //ввести сюда путь к файлу для чтения текста
@@ -14,9 +15,10 @@ string pathRead ="testRead.txt";
 string pathWrite="testWrite.txt";
 
 TextFile file = new TextFile(pathRead, pathWrite);
+WordsReport report = new WordsReport(file,new DictionaryAlgorithm(),file);
 
-WordsReport report = new WordsReport(file);
+report.ExtractText();
+report.CreateSortedReport();
+report.SaveSortedReport();
 
-report.CreateSortedReport(new DictionaryAlgorithm());
-report.SaveSortedReport(file);
 
