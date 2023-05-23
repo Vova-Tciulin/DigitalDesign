@@ -2,11 +2,10 @@
 using Parser;
 
 /*
+ * метод CreateSortedReport из класс WordsReport вызывает private метод из dll из которого получает словарь слов.
  * класс TextFile в данном случае считывает текст и сохраняет отчет в .txt файл(перезаписывает или создает новый файл)
- * класс DictionaryAlgorithm парсит текст на слова и сохраняет их в словарь, после чего генерирует отсортированный отчет
- * класс WordsReport реализует всю необходимую логику для для данной задачи
- * одинаковые слова, но с разным регистром являются разными словами
- */
+  * класс WordsReport реализует всю необходимую логику для для данной задачи
+  */
 
 //ввести сюда путь к файлу для чтения текста
 string pathRead ="testRead.txt";
@@ -15,7 +14,7 @@ string pathRead ="testRead.txt";
 string pathWrite="testWrite.txt";
 
 TextFile file = new TextFile(pathRead, pathWrite);
-WordsReport report = new WordsReport(file,new DictionaryAlgorithm(),file);
+WordsReport report = new WordsReport(file,file);
 
 report.ExtractText();
 report.CreateSortedReport();

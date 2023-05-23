@@ -1,5 +1,7 @@
 ﻿
 
+using System.Reflection;
+using System.Text;
 using Parser.Interfaces;
 
 namespace Parser;
@@ -10,13 +12,11 @@ public class WordsReport
     public string Text { get; set; }
     
     private readonly IGetText _getText;
-    private readonly IConstructReport _alg;
     private readonly ISaveText _saveText;
     
-    public WordsReport(IGetText getText,IConstructReport alg,ISaveText saveText)
+    public WordsReport(IGetText getText,ISaveText saveText)
     {
         _getText = getText;
-        _alg = alg;
         _saveText = saveText;
     }
 
@@ -26,7 +26,21 @@ public class WordsReport
     }
     public void CreateSortedReport()
     {
-        Report=_alg.GetSortedReport(Text);
+        
+        ParserDll.DictionaryAlgorithm alg = new ParserDll.DictionaryAlgorithm();
+        
+        var type = alg.GetType();
+
+        var privateMethod=type.GetMethod("GetWordsDictionary", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var sortedWords=privateMethod.Invoke(alg, new []{Text}) as Dictionary<string,int>;
+        StringBuilder report = new StringBuilder();
+        
+        foreach (var pair in sortedWords)
+        {
+            report.Append($"{pair.Key} {new string(' ',Math.Abs(25-pair.Key.Length))} {pair.Value}\n");
+        }
+        Report = report.ToString();
     }
 
     public void SaveSortedReport()
