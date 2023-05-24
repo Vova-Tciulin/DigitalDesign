@@ -1,5 +1,6 @@
 ﻿
 
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Parser.Interfaces;
@@ -27,14 +28,17 @@ public class WordsReport
     }
     public void CreateSortedReport()
     {
-        
+        Stopwatch time = new Stopwatch();
         DictionaryAlgorithm alg = new DictionaryAlgorithm();
         
         var type = alg.GetType();
 
         var privateMethod=type.GetMethod("GetWordsDictionary", BindingFlags.NonPublic | BindingFlags.Instance);
-
+        time.Start();
         var sortedWords=privateMethod.Invoke(alg, new []{Text}) as Dictionary<string,int>;
+        time.Stop();
+        Console.WriteLine($"время в миллисекундах: {time.ElapsedMilliseconds}");
+        
         StringBuilder report = new StringBuilder();
         
         foreach (var pair in sortedWords)
@@ -46,8 +50,14 @@ public class WordsReport
 
     public void CreateSortedReportAsParallel()
     {
-        var words = new DictionaryAlgorithm().GetWordsDictionaryAsParrallel(Text);
         StringBuilder report = new StringBuilder();
+        
+        Stopwatch time = new Stopwatch();
+        time.Start();
+        var words = new DictionaryAlgorithm().GetWordsDictionaryAsParrallel(Text);
+        time.Stop();
+        Console.WriteLine($"время в миллисекундах: {time.ElapsedMilliseconds}");
+        
         
         foreach (var pair in words)
         {

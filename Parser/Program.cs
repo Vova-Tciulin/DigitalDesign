@@ -17,26 +17,18 @@ string pathRead ="testRead.txt";
 //ввести сюда путь к файлу для записи отчета
 string pathWrite="testWrite.txt";
 
-Stopwatch time = new Stopwatch();
+
 
 TextFile file = new TextFile(pathRead, pathWrite);
 WordsReport report = new WordsReport(file,file);
 
 report.ExtractText();
 
-//время при парралельном выполнении
-time.Start();
+//метод с парралельным выполненим
 report.CreateSortedReportAsParallel();
-time.Stop();
-Console.WriteLine($"время в миллисекундах: {time.ElapsedMilliseconds}");
-time.Reset();
 
-//время при обычном проходе коллекции слов
-time.Start();
+//метод с последовательным выполнением
 report.CreateSortedReport();
-time.Stop();
-Console.WriteLine($"время в миллисекундах: {time.ElapsedMilliseconds}");
-
 
 report.SaveSortedReport();
 
