@@ -1,11 +1,33 @@
-﻿using System.Text;
+﻿using System.Collections.Concurrent;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 namespace ParserDll;
 
 public class DictionaryAlgorithm
 {
-    
+    public Dictionary<string, int> GetWordsDictionaryAsParrallel(string text)
+    {
+        ConcurrentDictionary<string, int> words = new ConcurrentDictionary<string, int>();
+        var wordsCollection=Parse(text);
+        
+        //парралельное добавление слов в словарь из коллекций слов wordsCollection
+        Parallel.ForEach(
+            wordsCollection,
+            (Match word) =>
+            {
+                if (!words.TryAdd(word.Value, 1))
+                {
+                    words[word.Value]++;
+                }
+            }
+        );
+        
+        return words.OrderByDescending(u=>u.Value).ToDictionary(u=>u.Key,u=>u.Value);
+    }
+
+  
     private Dictionary<string, int> GetWordsDictionary(string text)
     {
         
@@ -13,20 +35,6 @@ public class DictionaryAlgorithm
         
         var wordsCollection=Parse(text);
         
-        FillDictionary(wordsCollection,words);
-        var sortedWord = new Dictionary<string, int>();
-        sortedWord=words.OrderByDescending(u => u.Value).ToDictionary(u=>u.Key, u=>u.Value);
-        
-        return sortedWord;
-    }
-    private MatchCollection Parse(string text)
-    {
-        Regex regex = new Regex(@"\b[^\d\W]+\b");
-        return regex.Matches(text);
-    }
-    
-    private void FillDictionary(MatchCollection wordsCollection, Dictionary<string,int> words)
-    {
         for (int i = 0; i < wordsCollection.Count; i++)
         {
             if (!words.TryAdd(wordsCollection[i].Value, 1))
@@ -34,5 +42,17 @@ public class DictionaryAlgorithm
                 words[wordsCollection[i].Value]++;
             }
         }
+        
+       
+        return words.OrderByDescending(u => u.Value).ToDictionary(u=>u.Key, u=>u.Value);
     }
+    
+    
+    private MatchCollection Parse(string text)
+    {
+        Regex regex = new Regex(@"\b[^\d\W]+\b");
+        return regex.Matches(text);
+    }
+    
+   
 }

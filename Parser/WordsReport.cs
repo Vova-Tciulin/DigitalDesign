@@ -3,6 +3,7 @@
 using System.Reflection;
 using System.Text;
 using Parser.Interfaces;
+using ParserDll;
 
 namespace Parser;
 
@@ -27,7 +28,7 @@ public class WordsReport
     public void CreateSortedReport()
     {
         
-        ParserDll.DictionaryAlgorithm alg = new ParserDll.DictionaryAlgorithm();
+        DictionaryAlgorithm alg = new DictionaryAlgorithm();
         
         var type = alg.GetType();
 
@@ -43,6 +44,17 @@ public class WordsReport
         Report = report.ToString();
     }
 
+    public void CreateSortedReportAsParallel()
+    {
+        var words = new DictionaryAlgorithm().GetWordsDictionaryAsParrallel(Text);
+        StringBuilder report = new StringBuilder();
+        
+        foreach (var pair in words)
+        {
+            report.Append($"{pair.Key} {new string(' ',Math.Abs(25-pair.Key.Length))} {pair.Value}\n");
+        }
+        Report = report.ToString();
+    }
     public void SaveSortedReport()
     {
         _saveText.SaveReport(Report);
