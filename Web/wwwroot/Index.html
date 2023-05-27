@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Парсинг текста</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Введите текст:</h1>
+<textarea id="input" rows="10" cols="50"></textarea>
+<br><br>
+<button onclick="sendData()">Отправить</button>
+<h1>Словарь:</h1>
+<ul id="dict"></ul>
+
+<script>
+     function sendData() {
+         
+         const dict = document.getElementById('dict');
+         while (dict.firstChild) {
+             dict.removeChild(dict.firstChild);
+         }
+         
+         var text=document.getElementById('input').value;
+         
+        const response= fetch("api/text",{
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text: text
+            })
+        })
+        .then(async function(response) {
+            if (response.ok) {
+                const words=await response.json();
+                word(words);
+            } else {
+                alert("Ошибка при отправке данных: " + response.status);
+            }
+        })
+        .catch(function(error) {
+            alert("Ошибка при отправке данных: " + error);
+        });
+    }
+    function word(dict){
+        
+        var list = document.getElementById("dict");
+        
+        for (var key in dict) {
+            if (dict.hasOwnProperty(key)) {
+                var item = document.createElement("li");
+
+                item.innerText = key + ": " + dict[key];
+                
+                list.appendChild(item);
+            }
+        }
+    }
+    
+</script>
+</body>
+</html>
