@@ -1,6 +1,7 @@
 ﻿
 
 using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 using Parser.Interfaces;
@@ -16,6 +17,7 @@ public class WordsReport
     private readonly IGetText _getText;
     private readonly ISaveText _saveText;
     
+    
     public WordsReport(IGetText getText,ISaveText saveText)
     {
         _getText = getText;
@@ -25,6 +27,28 @@ public class WordsReport
     public void ExtractText()
     {
         Text = _getText.GetText();
+    }
+
+    public async Task CreateSortedReportFomWeb()
+    {
+        HttpClient client = new HttpClient();
+        RequestText text = new RequestText();
+
+        text.Text = Text;
+        
+        //отпрвака текста
+        using var response = await client.PostAsJsonAsync("http://localhost:5209/text", text);
+        
+        //получение ответа
+        Dictionary<string, int>? words = await response.Content.ReadFromJsonAsync<Dictionary<string, int>>();
+        
+        StringBuilder report = new StringBuilder();
+        
+        foreach (var pair in words)
+        {
+            report.Append($"{pair.Key} {new string(' ',Math.Abs(25-pair.Key.Length))} {pair.Value}\n");
+        }
+        Report = report.ToString();
     }
     public void CreateSortedReport()
     {
@@ -70,4 +94,9 @@ public class WordsReport
         _saveText.SaveReport(Report);
     }
 
+}
+
+public class RequestText
+{
+    public string Text { get; set; }
 }

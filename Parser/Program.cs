@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Http.Json;
 using Parser;
 
 /*
@@ -20,16 +21,20 @@ string pathWrite="testWrite.txt";
 
 
 TextFile file = new TextFile(pathRead, pathWrite);
+
+
+
 WordsReport report = new WordsReport(file,file);
 
 report.ExtractText();
 
+//метод, который вызывает web-сервис и принимает Dictionary<string,int>
+await report.CreateSortedReportFomWeb();
+
 //метод с парралельным выполненим
-report.CreateSortedReportAsParallel();
+//report.CreateSortedReportAsParallel();
 
 //метод с последовательным выполнением
-report.CreateSortedReport();
+//report.CreateSortedReport();
 
 report.SaveSortedReport();
-
-

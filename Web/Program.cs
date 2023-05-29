@@ -9,7 +9,7 @@ app.UseStaticFiles();
 
 //принимает текст и вызывает метод из dll. После возвращает результат в виде json
 
-app.MapPost("/api/text", (TextRequest text) =>
+app.MapPost("/text", (TextRequest text) =>
 {
     var words = new DictionaryAlgorithm().GetWordsDictionaryAsParrallel(text.Text);
     return Results.Json(words);
